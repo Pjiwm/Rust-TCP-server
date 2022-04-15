@@ -1,5 +1,4 @@
 pub fn reverse_string(s: &str) -> String {
-    println!("{}",s.chars().nth(0).unwrap());
     return format!(
         "{}{}\n",
         reverse_string_helper(s),
@@ -22,8 +21,8 @@ fn reverse_string_helper(s: &str) -> String {
 }
 
 pub fn palindrome(s: &str) -> String {
-    println!("{}", s);
-    println!("{}", reverse_string(s));
-    let is_palindrome = s == reverse_string(s);
+    // we need to format s with \n because we add that to the reverse_string as well
+    // this is done in reverse string to show cleaner output
+    let is_palindrome = format!("{}\n",s) == reverse_string(s);
     format!("{}\n", is_palindrome)
 }
