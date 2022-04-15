@@ -1,0 +1,7 @@
+services:
+  rust:
+    container_name: rust_networking
+    tty: true
+    build: .
+    ports:
+      - 12345:12345
