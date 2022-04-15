@@ -94,14 +94,18 @@ fn cmd_handler(cmd: &str) -> String {
             return "available commands: \n reverse {word} \n palindrome {word} \n scream {word}\n"
                 .to_owned()
         }
-
         "reverse" => {
             if contains_arg1 {
                 return cmd::reverse_string(args[1]);
             }
             return "Command error: No word was specified.\n".to_owned();
         }
-        "palindrome" => return "".to_owned(),
+        "palindrome" => {
+            if contains_arg1 {
+                return cmd::palindrome(args[1]);
+            }
+            return "Command error: No word was specified.\n".to_owned();
+        }
         "scream" => return "".to_owned(),
         _ => return format!("Unknown command: '{}'. Type help for help.\n", args[0]),
     }

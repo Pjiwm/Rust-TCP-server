@@ -12,3 +12,8 @@ pub fn reverse_string(s: &str) -> String {
     }
     return "\n".to_owned();
 }
+
+pub fn palindrome(s: &str) -> String {
+    let is_palindrome = s == reverse_string(s);
+    format!("{}\n", is_palindrome)
+}
