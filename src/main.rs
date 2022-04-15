@@ -54,6 +54,7 @@ fn tcp_listener(port: &str) {
     // Opens a data stream...
     match listener {
         Ok(l) => {
+            println!("Listening to port {}", port);
             for stream in l.incoming() {
                 match stream {
                     Ok(stream) => {
@@ -106,7 +107,12 @@ fn cmd_handler(cmd: &str) -> String {
             }
             return "Command error: No word was specified.\n".to_owned();
         }
-        "scream" => return "".to_owned(),
+        "scream" => {
+            if contains_arg1 {
+                return cmd::scream(args[1]);
+            }
+            return "Command error: No word was specified.\n".to_owned();
+        }
         _ => return format!("Unknown command: '{}'. Type help for help.\n", args[0]),
     }
 }
