@@ -21,7 +21,7 @@ pub fn tcp_listener(port: &str) {
                                 "Connected to client".yellow()
                             );
                             // connects to client
-                            handle_client(stream);
+                            handle_client(stream, &address);
                         });
                     }
                     Err(_) => {
@@ -34,7 +34,7 @@ pub fn tcp_listener(port: &str) {
     }
 }
 
-fn handle_client(mut stream: TcpStream) {
+fn handle_client(mut stream: TcpStream, client_adr: &std::net::SocketAddr) {
     loop {
         stream.write(b"> ").unwrap();
         let mut read = [0; 1028];
@@ -55,7 +55,7 @@ fn handle_client(mut stream: TcpStream) {
                         .ok();
                     break;
                 }
-                stream.write(cmd_handler::handler(&cmd).as_bytes()).ok();
+                stream.write(cmd_handler::handler(&cmd, client_adr).as_bytes()).ok();
             }
             Err(err) => {
                 panic!("{}", err);

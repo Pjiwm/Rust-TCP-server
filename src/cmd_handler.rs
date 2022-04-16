@@ -1,11 +1,15 @@
-use super::string_algorithms;
 use super::file_manager;
+use super::string_algorithms;
 use colored::*;
 use substring::Substring;
 
-pub fn handler(cmd: &str) -> String {
+pub fn handler(cmd: &str, client_addr: &std::net::SocketAddr) -> String {
     let cmd_lower = cmd.to_lowercase().replace("\n", "");
-    println!("client used: [{}]", cmd_lower.green());
+    println!(
+        "{} used: [{}]",
+        format!("{}", client_addr).green(),
+        cmd_lower.green()
+    );
     let args: Vec<&str> = cmd_lower.split(" ").collect();
 
     let arg_len = args.len();
