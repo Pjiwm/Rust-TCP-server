@@ -3,10 +3,9 @@ use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::{env, str, thread};
-use substring::Substring;
 
-mod authenticate;
 mod cmd;
+mod cmd_handler;
 mod file_manager;
 
 fn main() {
@@ -125,75 +124,12 @@ fn cmd_handler(cmd: &str) -> String {
                 "{Your new note}".green()
             )
         }
-        "reverse" => {
-            if arg_len > 1 {
-                return cmd::reverse_string(args[1]);
-            }
-            return format!("{}", "Command error: No word was specified.\n".red());
-        }
-        "palindrome" => {
-            if arg_len > 1 {
-                return cmd::palindrome(args[1]);
-            }
-            return format!("{}", "Command error: No word was specified.\n".red());
-        }
-        "scream" => {
-            if arg_len > 1 {
-                return cmd::scream(args[1]);
-            }
-            return format!("{}", "Command error: No word was specified.\n".red());
-        }
-        "notes" => {
-            if !(arg_len > 1) {
-                return format!(
-                    "{}{}{}, {}\n",
-                    "Command error: No argument was was specified.\n".red(),
-                    "Available arguments: ".yellow(),
-                    "write".green(),
-                    "read".green()
-                );
-            }
-            let arg2 = &args[1].to_ascii_lowercase();
-            if arg2 != "write" && arg2 != "read" {
-                return format!(
-                    "{}{}{}, {}\n",
-                    "Command error: Unknown argument was specified.\n".red(),
-                    "Available arguments: ".yellow(),
-                    "write".green(),
-                    "read".green()
-                );
-            }
-
-            if !(arg_len > 2) && arg2 != "read" {
-                return format!(
-                    "{}{} {} {}\n",
-                    "Command error: writing requires extra argument.\n".red(),
-                    "Usage:",
-                    "notes write".yellow(),
-                    "This is a new note".green()
-                );
-            }
-
-            if arg2 == "read" {
-                return file_manager::read_file("notes");
-            }
-            let start_idx = "notes write ".chars().count();
-            let end_idx = cmd.chars().count() - 1;
-            let new_line = cmd.substring(start_idx, end_idx);
-            file_manager::write_file("notes", new_line);
-            if new_line.chars().count() < 3 {
-                return format!(
-                    "{}{} {} {}\n",
-                    "Command error: new note has to be at least 3 characters.\n".red(),
-                    "Usage:",
-                    "notes write".yellow(),
-                    "This is a new note".green()
-                );
-            }
-            return format!("{}", "Line added to notes.\n".green());
-        }
+        "reverse" => cmd_handler::reverse(arg_len, args),
+        "palindrome" => cmd_handler::palindrome(arg_len, args),
+        "scream" => cmd_handler::scream(arg_len, args),
+        "notes" => cmd_handler::notes(arg_len, args, cmd),
         _ => {
-            return format!(
+            format!(
                 "{}{}{}\n",
                 "Unknown command: '".yellow(),
                 args[0].red(),
