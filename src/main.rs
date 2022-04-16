@@ -1,7 +1,7 @@
 use colored::*;
 use std::io::Read;
 use std::io::Write;
-use std::net::{Shutdown, TcpListener, TcpStream};
+use std::net::{TcpListener, TcpStream};
 use std::{env, str, thread};
 
 mod cmd;
@@ -71,7 +71,12 @@ fn tcp_listener(port: &str) {
                 match stream {
                     Ok(stream) => {
                         thread::spawn(move || {
-                            println!("{}", "Connected to client".green());
+                            let address = stream.peer_addr().unwrap();
+                            println!(
+                                "{} {}",
+                                format!("{}", address).green(),
+                                "Connected to client".yellow()
+                            );
                             // connects to client
                             handle_client(stream);
                         });
