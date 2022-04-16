@@ -5,8 +5,10 @@ use std::net::{TcpListener, TcpStream};
 use std::{env, str, thread};
 
 mod cmd;
+mod file_manager;
 
 fn main() {
+    file_manager::write_file("users", "I love icecream");
     let args: Vec<String> = env::args().collect();
     // validate if a correct port was given
     let argument = args
