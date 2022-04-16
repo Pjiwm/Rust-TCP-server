@@ -1,7 +1,7 @@
 use colored::*;
 use std::io::Read;
 use std::io::Write;
-use std::net::{TcpListener, TcpStream};
+use std::net::{Shutdown, TcpListener, TcpStream};
 use std::{env, str, thread};
 
 mod cmd;
@@ -45,6 +45,13 @@ fn handle_client(mut stream: TcpStream) {
                 }
                 // command of the user as string
                 let cmd = convert_bytes_to_str(&read[0..bytes]);
+                // close connection with client when they use exit
+                if cmd == "exit\n" || cmd.starts_with("exit ") {
+                    stream
+                        .write(format!("{}", "Disconnected\n".yellow()).as_bytes())
+                        .ok();
+                    break;
+                }
                 stream.write(cmd_handler(&cmd).as_bytes()).ok();
             }
             Err(err) => {
@@ -98,7 +105,7 @@ fn cmd_handler(cmd: &str) -> String {
     match args[0] {
         "help" => {
             return format!(
-                "{} \n reverse {} \n palindrome {} \n scream {}\n",
+                "{} \n reverse {} \n palindrome {} \n scream {}\n exit",
                 "available commands:".yellow().underline(),
                 "{word}".green(),
                 "{word}".green(),
