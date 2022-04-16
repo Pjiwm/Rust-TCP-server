@@ -6,15 +6,7 @@ use std::io::BufReader;
 pub fn read_file(file_name: &str) -> String {
     let file = File::open(format!("src/static/{}", file_name));
     let file: File = match file {
-        Ok(f) => {
-            println!(
-                "{} {} {}",
-                "file".yellow(),
-                file_name.green(),
-                "was found".yellow()
-            );
-            f
-        }
+        Ok(f) => f,
         Err(_) => create_file(&file_name),
     };
     let mut buf_reader = BufReader::new(file);
