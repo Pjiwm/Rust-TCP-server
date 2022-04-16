@@ -1,3 +1,4 @@
+use colored::*;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
@@ -22,7 +23,11 @@ fn main() {
     }
     let port_int = argument.parse::<i32>().unwrap();
     if port_int < 1024 || port_int > 65535 {
-        panic!("port number should be between 1024 and 65535")
+        panic!(
+            "port number should be between {} and {}",
+            "1024".yellow(),
+            "65535".yellow()
+        )
     }
 
     tcp_listener(argument);
@@ -54,12 +59,12 @@ fn tcp_listener(port: &str) {
     // Opens a data stream...
     match listener {
         Ok(l) => {
-            println!("Listening to port {}", port);
+            println!("{} {}", "Listening to port".yellow(), port.green());
             for stream in l.incoming() {
                 match stream {
                     Ok(stream) => {
                         thread::spawn(move || {
-                            println!("Connected to client");
+                            println!("{}", "Connected to client".green());
                             // connects to client
                             handle_client(stream);
                         });
@@ -86,33 +91,45 @@ fn convert_bytes_to_str(buf: &[u8]) -> String {
 fn cmd_handler(cmd: &str) -> String {
     let cmd_lower = cmd.to_lowercase().replace("\n", "");
     let args: Vec<&str> = cmd_lower.split(" ").collect();
-    println!("client used: [{}]", args[0]);
+    println!("client used: [{}]", args[0].green());
 
     let contains_arg1: bool = args.len() > 1;
 
     match args[0] {
         "help" => {
-            return "available commands: \n reverse {word} \n palindrome {word} \n scream {word}\n"
-                .to_owned()
+            return format!(
+                "{} \n reverse {} \n palindrome {} \n scream {}\n",
+                "available commands:".yellow().underline(),
+                "{word}".green(),
+                "{word}".green(),
+                "{word}".green()
+            )
         }
         "reverse" => {
             if contains_arg1 {
                 return cmd::reverse_string(args[1]);
             }
-            return "Command error: No word was specified.\n".to_owned();
+            return format!("{}", "Command error: No word was specified.\n".red());
         }
         "palindrome" => {
             if contains_arg1 {
                 return cmd::palindrome(args[1]);
             }
-            return "Command error: No word was specified.\n".to_owned();
+            return format!("{}", "Command error: No word was specified.\n".red());
         }
         "scream" => {
             if contains_arg1 {
                 return cmd::scream(args[1]);
             }
-            return "Command error: No word was specified.\n".to_owned();
+            return format!("{}", "Command error: No word was specified.\n".red());
         }
-        _ => return format!("Unknown command: '{}'. Type help for help.\n", args[0]),
+        _ => {
+            return format!(
+                "{}{}{}\n",
+                "Unknown command: '".yellow(),
+                args[0].red(),
+                "'. Type help for help.".yellow()
+            )
+        }
     }
 }
