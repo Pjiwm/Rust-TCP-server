@@ -1,30 +1,64 @@
-use super::cmd;
+use super::string_algorithms;
 use super::file_manager;
 use colored::*;
 use substring::Substring;
 
-pub fn reverse(arg_len: usize, args: Vec<&str>) -> String {
+pub fn handler(cmd: &str) -> String {
+    let cmd_lower = cmd.to_lowercase().replace("\n", "");
+    println!("client used: [{}]", cmd_lower.green());
+    let args: Vec<&str> = cmd_lower.split(" ").collect();
+
+    let arg_len = args.len();
+
+    match args[0] {
+        "help" => {
+            return format!(
+                "{} \n reverse {} \n palindrome {} \n scream {}\n notes {} {}\nexit",
+                "available commands:".yellow().underline(),
+                "{word}".green(),
+                "{word}".green(),
+                "{word}".green(),
+                "{read/write}".green(),
+                "{Your new note}".green()
+            )
+        }
+        "reverse" => reverse(arg_len, args),
+        "palindrome" => palindrome(arg_len, args),
+        "scream" => scream(arg_len, args),
+        "notes" => notes(arg_len, args, cmd),
+        _ => {
+            format!(
+                "{}{}{}\n",
+                "Unknown command: '".yellow(),
+                args[0].red(),
+                "'. Type help for help.".yellow()
+            )
+        }
+    }
+}
+
+fn reverse(arg_len: usize, args: Vec<&str>) -> String {
     if arg_len > 1 {
-        cmd::reverse_string(args[1]);
+        return string_algorithms::reverse_string(args[1]);
     }
     return format!("{}", "Command error: No word was specified.\n".red());
 }
 
-pub fn palindrome(arg_len: usize, args: Vec<&str>) -> String {
+fn palindrome(arg_len: usize, args: Vec<&str>) -> String {
     if arg_len > 1 {
-        cmd::palindrome(args[1]);
+        return string_algorithms::palindrome(args[1]);
     }
     return format!("{}", "Command error: No word was specified.\n".red());
 }
 
-pub fn scream(arg_len: usize, args: Vec<&str>) -> String {
+fn scream(arg_len: usize, args: Vec<&str>) -> String {
     if arg_len > 1 {
-        cmd::scream(args[1]);
+        return string_algorithms::scream(args[1]);
     }
     return format!("{}", "Command error: No word was specified.\n".red());
 }
 
-pub fn notes(arg_len: usize, args: Vec<&str>, cmd: &str) -> String {
+fn notes(arg_len: usize, args: Vec<&str>, cmd: &str) -> String {
     {
         if !(arg_len > 1) {
             return format!(
