@@ -1,9 +1,9 @@
+use super::cmd_handler;
 use colored::*;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
-use std::{thread, str};
-use super::cmd_handler;
+use std::{str, thread};
 pub fn tcp_listener(port: &str) {
     let listener = TcpListener::bind(format!("0.0.0.0:{}", port));
     // Opens a data stream...
@@ -55,7 +55,9 @@ fn handle_client(mut stream: TcpStream, client_adr: &std::net::SocketAddr) {
                         .ok();
                     break;
                 }
-                stream.write(cmd_handler::handler(&cmd, client_adr).as_bytes()).ok();
+                stream
+                    .write(cmd_handler::handler(&cmd, client_adr).as_bytes())
+                    .ok();
             }
             Err(err) => {
                 panic!("{}", err);
@@ -71,4 +73,17 @@ fn convert_bytes_to_str(buf: &[u8]) -> String {
     };
 
     s.to_owned()
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::tcp;
+    #[test]
+    fn bytes_convert_correctly_to_string() {
+        let string = String::from("This is a string");
+        let bytes = &string.as_bytes();
+        let converted_bytes = tcp::convert_bytes_to_str(bytes);
+        assert_eq!(converted_bytes, string);
+    }
+
 }

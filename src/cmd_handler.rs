@@ -113,3 +113,57 @@ fn notes(arg_len: usize, args: Vec<&str>, cmd: &str) -> String {
         return format!("{}", "Line added to notes.\n".green());
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::cmd_handler;
+    use colored::*;
+    #[test]
+    fn reverse_gives_error_when_lack_of_args() {
+        let args = vec!["reverse"];
+        let result = cmd_handler::reverse(args.len(), args);
+        let expected_result = format!("{}", "Command error: No word was specified.\n".red());
+        assert_eq!(result, expected_result);
+    }
+    #[test]
+    fn reverse_reverses_when_enough_args_given() {
+        let args = vec!["reverse", "jeff"];
+        let result = cmd_handler::reverse(args.len(), args);
+        assert_eq!(result, String::from("ffej\n"));
+    }
+    #[test]
+
+    fn reverse_works_when_excessive_args_given() {
+        let args = vec!["reverse", "jeff", "extra", "args"];
+        let result = cmd_handler::reverse(args.len(), args);
+        assert_eq!(result, String::from("ffej\n"))
+    }
+
+    #[test]
+    fn palindrome_gives_error_when_lack_of_args() {
+        let args = vec!["palindrome"];
+        let result = cmd_handler::palindrome(args.len(), args);
+        let expected_result = format!("{}", "Command error: No word was specified.\n".red());
+        assert_eq!(result, expected_result);
+    }
+
+    #[test]
+    fn palindrome_works_when_enough_args_given() {
+        let args_true = vec!["palindrome", "legovogel"];
+        let args_false = vec!["palindrome", "banana"];
+        let expected_true = cmd_handler::palindrome(args_true.len(), args_true);
+        let expected_false = cmd_handler::palindrome(args_false.len(), args_false);
+        assert_eq!(expected_true, String::from("true\n"));
+        assert_eq!(expected_false, String::from("false\n"));
+    }
+
+    #[test]
+    fn palindrome_works_when_excessive_args_given() {
+        let args_true = vec!["palindrome", "bob", "extra", "args"];
+        let args_false = vec!["palindrome", "banana", "extra", "args"];
+        let expected_true = cmd_handler::palindrome(args_true.len(), args_true);
+        let expected_false = cmd_handler::palindrome(args_false.len(), args_false);
+        assert_eq!(expected_true, String::from("true\n"));
+        assert_eq!(expected_false, String::from("false\n"));
+    }
+}

@@ -45,3 +45,37 @@ pub fn scream(s: &str) -> String {
     scream.push_str("!!!\n");
     scream
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::string_algorithms;
+    #[test]
+    fn reverses_string_works_and_adds_new_line() {
+        let original = "123456789";
+        let reverse = "987654321\n";
+        let reversed_by_fn = string_algorithms::reverse_string(original);
+        assert_eq!(reverse, reversed_by_fn);
+    }
+    #[test]
+    fn palindrome_returns_false_when_not() {
+        let original = "bird";
+        let palindrome_check = string_algorithms::palindrome(original);
+        assert_eq!(palindrome_check, String::from("false\n"));
+    }
+
+    #[test]
+    fn palindrome_returns_string_true_when_palindrome() {
+        let original = "legovogel";
+        let palindrome_check = string_algorithms::palindrome(original);
+        assert_eq!(palindrome_check, String::from("true\n")); 
+    }
+
+    #[test]
+    fn scream_works() {
+        let original = "some-text";
+        let scream_check = string_algorithms::scream(original);
+        assert_eq!(scream_check, String::from("SOOOMEEE-TEEEXT!!!\n"));
+    }
+
+}
+
