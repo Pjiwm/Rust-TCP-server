@@ -1,5 +1,5 @@
 use colored::*;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::prelude::*;
 use std::io::BufReader;
 
@@ -47,4 +47,9 @@ fn create_file(file_name: &str) -> File {
     );
     let file = File::create(format!("src/static/{}", file_name)).ok();
     return file.unwrap();
+}
+
+fn remove_file(file_name: &str) -> std::io::Result<()> {
+    fs::remove_file(format!("src/static/{}", file_name))?;
+    Ok(())
 }
