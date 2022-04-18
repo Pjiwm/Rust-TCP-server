@@ -84,7 +84,7 @@ mod tests {
     }
     #[test]
     fn reading_to_file_with_incorrect_name_should_return_empty_content() {
-        let contents = file_manager::read_file("/balls/test");
+        let contents = file_manager::read_file("/");
         assert_eq!(contents.is_empty(), true)
     }
 }
