@@ -29,7 +29,7 @@ pub fn handler(cmd: &str, client_addr: &std::net::SocketAddr) -> String {
         "reverse" => reverse(arg_len, args),
         "palindrome" => palindrome(arg_len, args),
         "scream" => scream(arg_len, args),
-        "notes" => notes(arg_len, args, cmd),
+        "notes" => notes(arg_len, args, cmd, "notes"),
         _ => {
             format!(
                 "{}{}{}\n",
@@ -62,7 +62,7 @@ fn scream(arg_len: usize, args: Vec<&str>) -> String {
     return format!("{}", "Command error: No word was specified.\n".red());
 }
 
-fn notes(arg_len: usize, args: Vec<&str>, cmd: &str) -> String {
+fn notes(arg_len: usize, args: Vec<&str>, cmd: &str, file_name: &str) -> String {
     {
         if !(arg_len > 1) {
             return format!(
@@ -95,12 +95,12 @@ fn notes(arg_len: usize, args: Vec<&str>, cmd: &str) -> String {
         }
 
         if arg2 == "read" {
-            return file_manager::read_file("notes");
+            return file_manager::read_file(file_name);
         }
         let start_idx = "notes write ".chars().count();
         let end_idx = cmd.chars().count() - 1;
         let new_line = cmd.substring(start_idx, end_idx);
-        file_manager::write_file("notes", new_line);
+        file_manager::write_file(file_name, new_line);
         if new_line.chars().count() < 3 {
             return format!(
                 "{}{} {} {}\n",
@@ -125,14 +125,15 @@ mod tests {
         let expected_result = format!("{}", "Command error: No word was specified.\n".red());
         assert_eq!(result, expected_result);
     }
+
     #[test]
-    fn reverse_reverses_when_enough_args_given() {
+    fn reverse_works_when_enough_args_given() {
         let args = vec!["reverse", "jeff"];
         let result = cmd_handler::reverse(args.len(), args);
         assert_eq!(result, String::from("ffej\n"));
     }
-    #[test]
 
+    #[test]
     fn reverse_works_when_excessive_args_given() {
         let args = vec!["reverse", "jeff", "extra", "args"];
         let result = cmd_handler::reverse(args.len(), args);
@@ -165,5 +166,27 @@ mod tests {
         let expected_false = cmd_handler::palindrome(args_false.len(), args_false);
         assert_eq!(expected_true, String::from("true\n"));
         assert_eq!(expected_false, String::from("false\n"));
+    }
+
+    #[test]
+    fn scream_gives_error_when_lack_of_args() {
+        let args = vec!["scream"];
+        let result = cmd_handler::scream(args.len(), args);
+        let expected_result = format!("{}", "Command error: No word was specified.\n".red());
+        assert_eq!(result, expected_result);
+    }
+
+    #[test]
+    fn scream_works_when_enough_args_given() {
+        let args = vec!["scream", "hello"];
+        let result = cmd_handler::scream(args.len(), args);
+        assert_eq!(result, String::from("HEEELLOOO!!!\n"));
+    }
+
+    #[test]
+    fn scream_works_when_excessive_args_given() {
+        let args = vec!["scream", "hello", "extra", "args"];
+        let result = cmd_handler::scream(args.len(), args);
+        assert_eq!(result, String::from("HEEELLOOO!!!\n"));
     }
 }
