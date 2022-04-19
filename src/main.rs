@@ -1,13 +1,19 @@
 use colored::*;
-use std::{env, fmt::format};
+use std::env;
 mod cmd_handler;
 mod file_manager;
 mod string_algorithms;
 mod tcp;
 
 fn main() {
-    let client_msg = format!("To use as a client use args:\n{}", "{client} {port} {ip}".green());
-    let server_msg = format!("To use as a server use args:\n{}", "{server} {port}".green());
+    let client_msg = format!(
+        "To use as a client use args:\n{}",
+        "{client} {port} {ip}".green()
+    );
+    let server_msg = format!(
+        "To use as a server use args:\n{}",
+        "{server} {port}".green()
+    );
     println!("Starting up...\n{}\n{}\n\n", client_msg, server_msg);
 
     let args: Vec<String> = env::args().collect();
