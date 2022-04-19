@@ -18,7 +18,8 @@ pub fn run_client(port: &str, ip: &str) {
         match input_stream.read(&mut client_buffer) {
             Ok(n) => {
                 if n == 0 {
-                    panic!("exit");
+                    println!("{}\n{} {} {}", "Disconnected".red(), "Press:".yellow(), "ctrl + c".green(), "to exit.".yellow());
+                    break;
                 } else {
                     io::stdout().write(&client_buffer).unwrap();
                     io::stdout().flush().unwrap();
@@ -34,7 +35,9 @@ pub fn run_client(port: &str, ip: &str) {
         let mut user_buffer = String::new();
         io::stdin().read_line(&mut user_buffer).unwrap();
 
-        output_stream.write(user_buffer.as_bytes()).unwrap();
+        output_stream
+            .write(user_buffer.as_bytes())
+            .unwrap_or_else(|_| 0);
         output_stream.flush().unwrap();
     }
 }
@@ -83,9 +86,6 @@ fn handle_client(mut stream: TcpStream, client_adr: &std::net::SocketAddr) {
                 let cmd = convert_bytes_to_str(&read[0..bytes]);
                 // close connection with client when they use exit
                 if cmd == "exit\n" || cmd.starts_with("exit ") {
-                    stream
-                        .write(format!("{}", "Disconnected\n".yellow()).as_bytes())
-                        .ok();
                     break;
                 }
                 stream
