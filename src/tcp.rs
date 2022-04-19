@@ -1,9 +1,44 @@
 use super::cmd_handler;
 use colored::*;
+use std::io;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::{str, thread};
+
+pub fn run_client(port: &str, ip: &str) {
+    let mut stream = TcpStream::connect(format!("{}:{}", ip, port)).unwrap_or_else(|_| {
+        panic!("Could not connect to server.");
+    });
+
+    let mut input_stream = stream.try_clone().unwrap();
+
+    thread::spawn(move || loop {
+        let mut client_buffer = [0u8; 1024];
+        match input_stream.read(&mut client_buffer) {
+            Ok(n) => {
+                if n == 0 {
+                    panic!("exit");
+                } else {
+                    io::stdout().write(&client_buffer).unwrap();
+                    io::stdout().flush().unwrap();
+                }
+            }
+            Err(error) => panic!("{}", error.to_string()),
+        }
+    });
+
+    let output_stream = &mut stream;
+
+    loop {
+        let mut user_buffer = String::new();
+        io::stdin().read_line(&mut user_buffer).unwrap();
+
+        output_stream.write(user_buffer.as_bytes()).unwrap();
+        output_stream.flush().unwrap();
+    }
+}
+
 pub fn tcp_listener(port: &str) {
     let listener = TcpListener::bind(format!("0.0.0.0:{}", port));
     // Opens a data stream...
@@ -44,8 +79,6 @@ fn handle_client(mut stream: TcpStream, client_adr: &std::net::SocketAddr) {
                     // closed connection
                     break;
                 }
-
-                // check if in authentication phase.
                 // command of the user as string
                 let cmd = convert_bytes_to_str(&read[0..bytes]);
                 // close connection with client when they use exit
@@ -85,5 +118,4 @@ mod tests {
         let converted_bytes = tcp::convert_bytes_to_str(bytes);
         assert_eq!(converted_bytes, string);
     }
-
 }
