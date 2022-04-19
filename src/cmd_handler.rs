@@ -17,7 +17,7 @@ pub fn handler(cmd: &str, client_addr: &std::net::SocketAddr) -> String {
     match args[0] {
         "help" => {
             return format!(
-                "{} \n reverse {} \n palindrome {} \n scream {}\n notes {} {}\nexit",
+                "{} \n reverse {} \n palindrome {} \n scream {}\n notes {} {}\n exit\n",
                 "available commands:".yellow().underline(),
                 "{word}".green(),
                 "{word}".green(),
