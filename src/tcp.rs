@@ -1,6 +1,8 @@
 use super::cmd_handler;
 use colored::*;
+use std::collections::btree_map::Iter;
 use std::io;
+use std::io::LineWriter;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
@@ -18,7 +20,13 @@ pub fn run_client(port: &str, ip: &str) {
         match input_stream.read(&mut client_buffer) {
             Ok(n) => {
                 if n == 0 {
-                    println!("{}\n{} {} {}", "Disconnected".red(), "Press:".yellow(), "ctrl + c".green(), "to exit.".yellow());
+                    println!(
+                        "{}\n{} {} {}",
+                        "Disconnected".red(),
+                        "Press:".yellow(),
+                        "ctrl + c".green(),
+                        "to exit.".yellow()
+                    );
                     break;
                 } else {
                     io::stdout().write(&client_buffer).unwrap();
@@ -33,7 +41,10 @@ pub fn run_client(port: &str, ip: &str) {
 
     loop {
         let mut user_buffer = String::new();
+
         io::stdin().read_line(&mut user_buffer).unwrap();
+
+        user_buffer = user_buffer.replace("\r\n", "").replace("\n", "");
 
         output_stream
             .write(user_buffer.as_bytes())
@@ -84,8 +95,9 @@ fn handle_client(mut stream: TcpStream, client_adr: &std::net::SocketAddr) {
                 }
                 // command of the user as string
                 let cmd = convert_bytes_to_str(&read[0..bytes]);
+    
                 // close connection with client when they use exit
-                if cmd == "exit\n" || cmd.starts_with("exit ") {
+                if cmd == "exit" || cmd.starts_with("exit ") {
                     break;
                 }
                 stream
