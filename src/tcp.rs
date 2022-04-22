@@ -1,8 +1,6 @@
 use super::cmd_handler;
 use colored::*;
-use std::collections::btree_map::Iter;
 use std::io;
-use std::io::LineWriter;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};

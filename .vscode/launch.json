@@ -7,8 +7,37 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/<your program>",
+            "name": "Debug executable 'workspace'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=workspace",
+                    "--package=workspace"
+                ],
+                "filter": {
+                    "name": "workspace",
+                    "kind": "bin"
+                }
+            },
+            "args": ["server", "12345"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'workspace'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=workspace",
+                    "--package=workspace"
+                ],
+                "filter": {
+                    "name": "workspace",
+                    "kind": "bin"
+                }
+            },
             "args": [],
             "cwd": "${workspaceFolder}"
         }
